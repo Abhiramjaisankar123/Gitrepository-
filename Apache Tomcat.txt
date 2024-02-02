@@ -1,0 +1,77 @@
+Application Server / Web server
+===============================
+1. Apache-Tomcat
+2. Jboss
+3. Nginx
+4. Glass-fish...etc
+
+Setup
+=====
+
+1. Download apache tomcat software and Extract it.
+    - https://tomcat.apache.org/download-10.cgi
+    - wget https://dlcdn.apache.org/tomcat/tomcat-10/v10.0.27/bin/apache-tomcat-10.0.27.tar.gz
+    - tar -xvzf apache-tomcat-10.0.27.tar.gz
+
+2. change port number in 
+    - vi /apache-tomcat-10.0.27/conf/server.xml
+    
+       <Connector port="8181" protocol="HTTP/1.1"
+                    connectionTimeout="20000"
+                    redirectPort="8443" />
+Note:- Jenkins also running on 8080 port by default. we can't run multiple applications on single port.
+
+
+3. Create an account in tomcat under manager app
+    - vi /apache-tomcat-10.0.27/conf/tomcat-users.xml
+
+<role rolename="admin-gui"/>
+<role rolename="admin-script"/>
+<role rolename="manager-status"/>
+<role rolename="manager-script"/>
+<role rolename="manager-gui"/>
+<user username="admin" password="admin" roles="admin-script,admin-gui,manager-script,manager-gui,manager-status" />
+
+
+Note:- 
+Please change the allow attribute value in the context.xml file, present in webapps/manager/META-INF folder.
+Old configuration
+<Valve className="org.apache.catalina.valves.RemoteAddrValve"
+         allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1" />
+change to new Configuration
+
+<Valve className="org.apache.catalina.valves.RemoteAddrValve"
+         allow="\d+\.\d+\.\d+\.\d+" />
+This will allow access to manager remotely from all IP addresses for login. Further you won't get 403 access denied page
+
+4. start apache-tomcat
+    - go to cd /apache-tomcat-10.0.27/bin/
+    - ./startup.sh (or) bash startup.sh
+    - ./shutdown.sh
+
+5. Verify tomcat by giving http://3.91.178.105:80 in the browser.
+
+
+Tomcat Integration With Jenkins
+===============================
+
+1. Install Jenkins in ec2-instance
+
+2. Install Deploy to container plugin 
+
+3. Create a deploy job and configure in post-build actions
+
+WAR/EAR files: **/*.war
+Context path: sample.war
+Containers: Tomcat 9.x Remote
+Tomcat URL: http://3.91.178.105:8181
+
+
+
+
+
+   						   =========THE END=======
+				
+			                   +91-7204143230(WhatsApp/Call), Email:- VmTutes@gmail.com
+
+
